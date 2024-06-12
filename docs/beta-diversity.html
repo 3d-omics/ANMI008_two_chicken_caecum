@@ -23,7 +23,7 @@
 <meta name="author" content="Antton Alberdi" />
 
 
-<meta name="date" content="2024-06-07" />
+<meta name="date" content="2024-06-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2116,79 +2116,79 @@ color: #741A48;
             <section class="normal" id="section-">
 <div id="beta-diversity" class="section level1 hasAnchor" number="6">
 <h1><span class="header-section-number">Chapter 6</span> Beta diversity<a href="beta-diversity.html#beta-diversity" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb66-1"><a href="beta-diversity.html#cb66-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;data/data.Rdata&quot;</span>)</span>
-<span id="cb66-2"><a href="beta-diversity.html#cb66-2" tabindex="-1"></a>quality <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;results/quality.tsv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb67-1"><a href="beta-diversity.html#cb67-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;data/data.Rdata&quot;</span>)</span>
+<span id="cb67-2"><a href="beta-diversity.html#cb67-2" tabindex="-1"></a>quality <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;results/quality.tsv&quot;</span>)</span></code></pre></div>
 <pre><code>Rows: 190 Columns: 2
-── Column specification ─────────────────────────────────────────────────────────────────────────────
+── Column specification ──────────────────────────────────────────────────────────────────────────────────────
 Delimiter: &quot;\t&quot;
 chr (1): microsample
 dbl (1): quality
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb68-1"><a href="beta-diversity.html#cb68-1" tabindex="-1"></a>selected_samples <span class="ot">&lt;-</span> sample_metadata <span class="sc">%&gt;%</span> </span>
-<span id="cb68-2"><a href="beta-diversity.html#cb68-2" tabindex="-1"></a>  <span class="fu">filter</span>(section <span class="sc">!=</span> <span class="st">&quot;Ileum&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb68-3"><a href="beta-diversity.html#cb68-3" tabindex="-1"></a>  <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">&quot;Positive&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb68-4"><a href="beta-diversity.html#cb68-4" tabindex="-1"></a>  <span class="fu">filter</span>(microsample <span class="sc">%in%</span> <span class="fu">colnames</span>(genome_counts_filt)) <span class="sc">%&gt;%</span></span>
-<span id="cb68-5"><a href="beta-diversity.html#cb68-5" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Xcoord)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(microsample) <span class="sc">%&gt;%</span> <span class="fu">pull</span>()</span>
-<span id="cb68-6"><a href="beta-diversity.html#cb68-6" tabindex="-1"></a></span>
-<span id="cb68-7"><a href="beta-diversity.html#cb68-7" tabindex="-1"></a><span class="co">#Calculate Hill numbers</span></span>
-<span id="cb68-8"><a href="beta-diversity.html#cb68-8" tabindex="-1"></a>richness_caecum <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
-<span id="cb68-9"><a href="beta-diversity.html#cb68-9" tabindex="-1"></a>            <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb68-10"><a href="beta-diversity.html#cb68-10" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">all_of</span>(selected_samples)) <span class="sc">%&gt;%</span></span>
-<span id="cb68-11"><a href="beta-diversity.html#cb68-11" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb68-12"><a href="beta-diversity.html#cb68-12" tabindex="-1"></a>            <span class="fu">hillpair</span>(.,<span class="at">q=</span><span class="dv">0</span>, <span class="at">metric=</span><span class="st">&quot;C&quot;</span>, <span class="at">out=</span><span class="st">&quot;pair&quot;</span>)</span>
-<span id="cb68-13"><a href="beta-diversity.html#cb68-13" tabindex="-1"></a></span>
-<span id="cb68-14"><a href="beta-diversity.html#cb68-14" tabindex="-1"></a>neutral_caecum <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
-<span id="cb68-15"><a href="beta-diversity.html#cb68-15" tabindex="-1"></a>            <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb68-16"><a href="beta-diversity.html#cb68-16" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">all_of</span>(selected_samples)) <span class="sc">%&gt;%</span></span>
-<span id="cb68-17"><a href="beta-diversity.html#cb68-17" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb68-18"><a href="beta-diversity.html#cb68-18" tabindex="-1"></a>            <span class="fu">hillpair</span>(.,<span class="at">q=</span><span class="dv">1</span>, <span class="at">metric=</span><span class="st">&quot;C&quot;</span>, <span class="at">out=</span><span class="st">&quot;pair&quot;</span>)</span>
-<span id="cb68-19"><a href="beta-diversity.html#cb68-19" tabindex="-1"></a></span>
-<span id="cb68-20"><a href="beta-diversity.html#cb68-20" tabindex="-1"></a>phylogenetic_caecum <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
-<span id="cb68-21"><a href="beta-diversity.html#cb68-21" tabindex="-1"></a>            <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb68-22"><a href="beta-diversity.html#cb68-22" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">all_of</span>(selected_samples)) <span class="sc">%&gt;%</span></span>
-<span id="cb68-23"><a href="beta-diversity.html#cb68-23" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb68-24"><a href="beta-diversity.html#cb68-24" tabindex="-1"></a>            <span class="fu">hillpair</span>(.,<span class="at">q=</span><span class="dv">1</span>, <span class="at">tree=</span>genome_tree, <span class="at">metric=</span><span class="st">&quot;C&quot;</span>, <span class="at">out=</span><span class="st">&quot;pair&quot;</span>)</span>
-<span id="cb68-25"><a href="beta-diversity.html#cb68-25" tabindex="-1"></a></span>
-<span id="cb68-26"><a href="beta-diversity.html#cb68-26" tabindex="-1"></a><span class="co"># Merge beta diversities</span></span>
-<span id="cb68-27"><a href="beta-diversity.html#cb68-27" tabindex="-1"></a>beta_diversity <span class="ot">&lt;-</span> richness_caecum <span class="sc">%&gt;%</span></span>
-<span id="cb68-28"><a href="beta-diversity.html#cb68-28" tabindex="-1"></a>      <span class="fu">full_join</span>(neutral_caecum,<span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;first&quot;</span>, <span class="st">&quot;second&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb68-29"><a href="beta-diversity.html#cb68-29" tabindex="-1"></a>      <span class="fu">full_join</span>(phylogenetic_caecum,<span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;first&quot;</span>, <span class="st">&quot;second&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb68-30"><a href="beta-diversity.html#cb68-30" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">richness=</span>C.x, <span class="at">neutral=</span>C.y, <span class="at">phylogenetic=</span>C)</span>
-<span id="cb68-31"><a href="beta-diversity.html#cb68-31" tabindex="-1"></a></span>
-<span id="cb68-32"><a href="beta-diversity.html#cb68-32" tabindex="-1"></a><span class="co"># Write alpha diversities</span></span>
-<span id="cb68-33"><a href="beta-diversity.html#cb68-33" tabindex="-1"></a>beta_diversity <span class="sc">%&gt;%</span> <span class="fu">write_tsv</span>(<span class="st">&quot;results/beta_div.tsv&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb69-1"><a href="beta-diversity.html#cb69-1" tabindex="-1"></a>beta_diversity <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;results/beta_div.tsv&quot;</span>)</span>
-<span id="cb69-2"><a href="beta-diversity.html#cb69-2" tabindex="-1"></a></span>
-<span id="cb69-3"><a href="beta-diversity.html#cb69-3" tabindex="-1"></a><span class="co">#Select high-quality samples</span></span>
-<span id="cb69-4"><a href="beta-diversity.html#cb69-4" tabindex="-1"></a>caecum_samples_hq <span class="ot">&lt;-</span> sample_metadata <span class="sc">%&gt;%</span> </span>
-<span id="cb69-5"><a href="beta-diversity.html#cb69-5" tabindex="-1"></a>  <span class="fu">left_join</span>(quality,<span class="at">by=</span><span class="fu">join_by</span>(microsample<span class="sc">==</span>microsample)) <span class="sc">%&gt;%</span></span>
-<span id="cb69-6"><a href="beta-diversity.html#cb69-6" tabindex="-1"></a>  <span class="fu">filter</span>(quality <span class="sc">&gt;=</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb69-7"><a href="beta-diversity.html#cb69-7" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Xcoord)) <span class="sc">%&gt;%</span> </span>
-<span id="cb69-8"><a href="beta-diversity.html#cb69-8" tabindex="-1"></a>  <span class="fu">select</span>(microsample) <span class="sc">%&gt;%</span> </span>
-<span id="cb69-9"><a href="beta-diversity.html#cb69-9" tabindex="-1"></a>  <span class="fu">pull</span>()</span>
-<span id="cb69-10"><a href="beta-diversity.html#cb69-10" tabindex="-1"></a></span>
-<span id="cb69-11"><a href="beta-diversity.html#cb69-11" tabindex="-1"></a>caecum_samples_nmds <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
-<span id="cb69-12"><a href="beta-diversity.html#cb69-12" tabindex="-1"></a>            <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb69-13"><a href="beta-diversity.html#cb69-13" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">all_of</span>(caecum_samples_hq)) <span class="sc">%&gt;%</span></span>
-<span id="cb69-14"><a href="beta-diversity.html#cb69-14" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb69-15"><a href="beta-diversity.html#cb69-15" tabindex="-1"></a>            <span class="fu">hillpair</span>(.,<span class="at">q=</span><span class="dv">1</span>, <span class="at">metric=</span><span class="st">&quot;C&quot;</span>, <span class="at">out=</span><span class="st">&quot;dist&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb69-16"><a href="beta-diversity.html#cb69-16" tabindex="-1"></a>            <span class="fu">metaMDS</span>(.,<span class="at">trymax =</span> <span class="dv">999</span>, <span class="at">k=</span><span class="dv">2</span>, <span class="at">trace=</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb69-17"><a href="beta-diversity.html#cb69-17" tabindex="-1"></a>            vegan<span class="sc">::</span><span class="fu">scores</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb69-18"><a href="beta-diversity.html#cb69-18" tabindex="-1"></a>            <span class="fu">as_tibble</span>(., <span class="at">rownames =</span> <span class="st">&quot;microsample&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb69-19"><a href="beta-diversity.html#cb69-19" tabindex="-1"></a>            <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(microsample <span class="sc">==</span> microsample)) <span class="sc">%&gt;%</span></span>
-<span id="cb69-20"><a href="beta-diversity.html#cb69-20" tabindex="-1"></a>            <span class="fu">group_by</span>(cryosection) <span class="sc">%&gt;%</span></span>
-<span id="cb69-21"><a href="beta-diversity.html#cb69-21" tabindex="-1"></a>            <span class="fu">mutate</span>(<span class="at">microsample_x=</span><span class="fu">mean</span>(NMDS1), <span class="at">microsample_y=</span><span class="fu">mean</span>(NMDS2))</span>
-<span id="cb69-22"><a href="beta-diversity.html#cb69-22" tabindex="-1"></a></span>
-<span id="cb69-23"><a href="beta-diversity.html#cb69-23" tabindex="-1"></a>caecum_samples_nmds <span class="sc">%&gt;%</span></span>
-<span id="cb69-24"><a href="beta-diversity.html#cb69-24" tabindex="-1"></a>            <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>NMDS1,<span class="at">y=</span>NMDS2, <span class="at">color=</span>cryosection)) <span class="sc">+</span></span>
-<span id="cb69-25"><a href="beta-diversity.html#cb69-25" tabindex="-1"></a>                <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb69-26"><a href="beta-diversity.html#cb69-26" tabindex="-1"></a>                <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x=</span>microsample_x, <span class="at">y=</span>microsample_y, <span class="at">xend=</span>NMDS1, <span class="at">yend=</span>NMDS2), <span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb69-27"><a href="beta-diversity.html#cb69-27" tabindex="-1"></a>                <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;#a3d1cf&quot;</span>,<span class="st">&quot;#5bb5b1&quot;</span>,<span class="st">&quot;#d1a3cf&quot;</span>,<span class="st">&quot;#a364a0&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb69-28"><a href="beta-diversity.html#cb69-28" tabindex="-1"></a>                <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb69-29"><a href="beta-diversity.html#cb69-29" tabindex="-1"></a>                <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">&quot;right&quot;</span>, <span class="at">legend.box=</span><span class="st">&quot;vertical&quot;</span>) <span class="sc">+</span></span>
-<span id="cb69-30"><a href="beta-diversity.html#cb69-30" tabindex="-1"></a>                <span class="fu">guides</span>(<span class="at">color=</span><span class="fu">guide_legend</span>(<span class="at">title=</span><span class="st">&quot;Cryosection&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb69-1"><a href="beta-diversity.html#cb69-1" tabindex="-1"></a>selected_samples <span class="ot">&lt;-</span> sample_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb69-2"><a href="beta-diversity.html#cb69-2" tabindex="-1"></a>  <span class="fu">filter</span>(section <span class="sc">!=</span> <span class="st">&quot;Ileum&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-3"><a href="beta-diversity.html#cb69-3" tabindex="-1"></a>  <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">&quot;Positive&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-4"><a href="beta-diversity.html#cb69-4" tabindex="-1"></a>  <span class="fu">filter</span>(microsample <span class="sc">%in%</span> <span class="fu">colnames</span>(genome_counts_filt)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-5"><a href="beta-diversity.html#cb69-5" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Xcoord)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(microsample) <span class="sc">%&gt;%</span> <span class="fu">pull</span>()</span>
+<span id="cb69-6"><a href="beta-diversity.html#cb69-6" tabindex="-1"></a></span>
+<span id="cb69-7"><a href="beta-diversity.html#cb69-7" tabindex="-1"></a><span class="co">#Calculate Hill numbers</span></span>
+<span id="cb69-8"><a href="beta-diversity.html#cb69-8" tabindex="-1"></a>richness_caecum <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb69-9"><a href="beta-diversity.html#cb69-9" tabindex="-1"></a>            <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-10"><a href="beta-diversity.html#cb69-10" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">all_of</span>(selected_samples)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-11"><a href="beta-diversity.html#cb69-11" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb69-12"><a href="beta-diversity.html#cb69-12" tabindex="-1"></a>            <span class="fu">hillpair</span>(.,<span class="at">q=</span><span class="dv">0</span>, <span class="at">metric=</span><span class="st">&quot;C&quot;</span>, <span class="at">out=</span><span class="st">&quot;pair&quot;</span>)</span>
+<span id="cb69-13"><a href="beta-diversity.html#cb69-13" tabindex="-1"></a></span>
+<span id="cb69-14"><a href="beta-diversity.html#cb69-14" tabindex="-1"></a>neutral_caecum <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb69-15"><a href="beta-diversity.html#cb69-15" tabindex="-1"></a>            <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-16"><a href="beta-diversity.html#cb69-16" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">all_of</span>(selected_samples)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-17"><a href="beta-diversity.html#cb69-17" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb69-18"><a href="beta-diversity.html#cb69-18" tabindex="-1"></a>            <span class="fu">hillpair</span>(.,<span class="at">q=</span><span class="dv">1</span>, <span class="at">metric=</span><span class="st">&quot;C&quot;</span>, <span class="at">out=</span><span class="st">&quot;pair&quot;</span>)</span>
+<span id="cb69-19"><a href="beta-diversity.html#cb69-19" tabindex="-1"></a></span>
+<span id="cb69-20"><a href="beta-diversity.html#cb69-20" tabindex="-1"></a>phylogenetic_caecum <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb69-21"><a href="beta-diversity.html#cb69-21" tabindex="-1"></a>            <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-22"><a href="beta-diversity.html#cb69-22" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">all_of</span>(selected_samples)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-23"><a href="beta-diversity.html#cb69-23" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb69-24"><a href="beta-diversity.html#cb69-24" tabindex="-1"></a>            <span class="fu">hillpair</span>(.,<span class="at">q=</span><span class="dv">1</span>, <span class="at">tree=</span>genome_tree, <span class="at">metric=</span><span class="st">&quot;C&quot;</span>, <span class="at">out=</span><span class="st">&quot;pair&quot;</span>)</span>
+<span id="cb69-25"><a href="beta-diversity.html#cb69-25" tabindex="-1"></a></span>
+<span id="cb69-26"><a href="beta-diversity.html#cb69-26" tabindex="-1"></a><span class="co"># Merge beta diversities</span></span>
+<span id="cb69-27"><a href="beta-diversity.html#cb69-27" tabindex="-1"></a>beta_diversity <span class="ot">&lt;-</span> richness_caecum <span class="sc">%&gt;%</span></span>
+<span id="cb69-28"><a href="beta-diversity.html#cb69-28" tabindex="-1"></a>      <span class="fu">full_join</span>(neutral_caecum,<span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;first&quot;</span>, <span class="st">&quot;second&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-29"><a href="beta-diversity.html#cb69-29" tabindex="-1"></a>      <span class="fu">full_join</span>(phylogenetic_caecum,<span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;first&quot;</span>, <span class="st">&quot;second&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-30"><a href="beta-diversity.html#cb69-30" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">richness=</span>C.x, <span class="at">neutral=</span>C.y, <span class="at">phylogenetic=</span>C)</span>
+<span id="cb69-31"><a href="beta-diversity.html#cb69-31" tabindex="-1"></a></span>
+<span id="cb69-32"><a href="beta-diversity.html#cb69-32" tabindex="-1"></a><span class="co"># Write alpha diversities</span></span>
+<span id="cb69-33"><a href="beta-diversity.html#cb69-33" tabindex="-1"></a>beta_diversity <span class="sc">%&gt;%</span> <span class="fu">write_tsv</span>(<span class="st">&quot;results/beta_div.tsv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb70-1"><a href="beta-diversity.html#cb70-1" tabindex="-1"></a>beta_diversity <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;results/beta_div.tsv&quot;</span>)</span>
+<span id="cb70-2"><a href="beta-diversity.html#cb70-2" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="beta-diversity.html#cb70-3" tabindex="-1"></a><span class="co">#Select high-quality samples</span></span>
+<span id="cb70-4"><a href="beta-diversity.html#cb70-4" tabindex="-1"></a>caecum_samples_hq <span class="ot">&lt;-</span> sample_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb70-5"><a href="beta-diversity.html#cb70-5" tabindex="-1"></a>  <span class="fu">left_join</span>(quality,<span class="at">by=</span><span class="fu">join_by</span>(microsample<span class="sc">==</span>microsample)) <span class="sc">%&gt;%</span></span>
+<span id="cb70-6"><a href="beta-diversity.html#cb70-6" tabindex="-1"></a>  <span class="fu">filter</span>(quality <span class="sc">&gt;=</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-7"><a href="beta-diversity.html#cb70-7" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Xcoord)) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-8"><a href="beta-diversity.html#cb70-8" tabindex="-1"></a>  <span class="fu">select</span>(microsample) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-9"><a href="beta-diversity.html#cb70-9" tabindex="-1"></a>  <span class="fu">pull</span>()</span>
+<span id="cb70-10"><a href="beta-diversity.html#cb70-10" tabindex="-1"></a></span>
+<span id="cb70-11"><a href="beta-diversity.html#cb70-11" tabindex="-1"></a>caecum_samples_nmds <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb70-12"><a href="beta-diversity.html#cb70-12" tabindex="-1"></a>            <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-13"><a href="beta-diversity.html#cb70-13" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">all_of</span>(caecum_samples_hq)) <span class="sc">%&gt;%</span></span>
+<span id="cb70-14"><a href="beta-diversity.html#cb70-14" tabindex="-1"></a>            <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb70-15"><a href="beta-diversity.html#cb70-15" tabindex="-1"></a>            <span class="fu">hillpair</span>(.,<span class="at">q=</span><span class="dv">1</span>, <span class="at">metric=</span><span class="st">&quot;C&quot;</span>, <span class="at">out=</span><span class="st">&quot;dist&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-16"><a href="beta-diversity.html#cb70-16" tabindex="-1"></a>            <span class="fu">metaMDS</span>(.,<span class="at">trymax =</span> <span class="dv">999</span>, <span class="at">k=</span><span class="dv">2</span>, <span class="at">trace=</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-17"><a href="beta-diversity.html#cb70-17" tabindex="-1"></a>            vegan<span class="sc">::</span><span class="fu">scores</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb70-18"><a href="beta-diversity.html#cb70-18" tabindex="-1"></a>            <span class="fu">as_tibble</span>(., <span class="at">rownames =</span> <span class="st">&quot;microsample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-19"><a href="beta-diversity.html#cb70-19" tabindex="-1"></a>            <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(microsample <span class="sc">==</span> microsample)) <span class="sc">%&gt;%</span></span>
+<span id="cb70-20"><a href="beta-diversity.html#cb70-20" tabindex="-1"></a>            <span class="fu">group_by</span>(cryosection) <span class="sc">%&gt;%</span></span>
+<span id="cb70-21"><a href="beta-diversity.html#cb70-21" tabindex="-1"></a>            <span class="fu">mutate</span>(<span class="at">microsample_x=</span><span class="fu">mean</span>(NMDS1), <span class="at">microsample_y=</span><span class="fu">mean</span>(NMDS2))</span>
+<span id="cb70-22"><a href="beta-diversity.html#cb70-22" tabindex="-1"></a></span>
+<span id="cb70-23"><a href="beta-diversity.html#cb70-23" tabindex="-1"></a>caecum_samples_nmds <span class="sc">%&gt;%</span></span>
+<span id="cb70-24"><a href="beta-diversity.html#cb70-24" tabindex="-1"></a>            <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>NMDS1,<span class="at">y=</span>NMDS2, <span class="at">color=</span>cryosection)) <span class="sc">+</span></span>
+<span id="cb70-25"><a href="beta-diversity.html#cb70-25" tabindex="-1"></a>                <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb70-26"><a href="beta-diversity.html#cb70-26" tabindex="-1"></a>                <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x=</span>microsample_x, <span class="at">y=</span>microsample_y, <span class="at">xend=</span>NMDS1, <span class="at">yend=</span>NMDS2), <span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb70-27"><a href="beta-diversity.html#cb70-27" tabindex="-1"></a>                <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;#a3d1cf&quot;</span>,<span class="st">&quot;#5bb5b1&quot;</span>,<span class="st">&quot;#d1a3cf&quot;</span>,<span class="st">&quot;#a364a0&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb70-28"><a href="beta-diversity.html#cb70-28" tabindex="-1"></a>                <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb70-29"><a href="beta-diversity.html#cb70-29" tabindex="-1"></a>                <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">&quot;right&quot;</span>, <span class="at">legend.box=</span><span class="st">&quot;vertical&quot;</span>) <span class="sc">+</span></span>
+<span id="cb70-30"><a href="beta-diversity.html#cb70-30" tabindex="-1"></a>                <span class="fu">guides</span>(<span class="at">color=</span><span class="fu">guide_legend</span>(<span class="at">title=</span><span class="st">&quot;Cryosection&quot;</span>))</span></code></pre></div>
 
 </div>
 

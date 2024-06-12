@@ -9,7 +9,7 @@ quality <- read_tsv("results/quality.tsv")
 
 ### Positive samples, coverage-filtered
 
-```{r barplot_positive_filtered, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+```{r barplot_positive_filtered_phylum, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
 #Get phylum colors from the EHI standard
 phylum_colors <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
     right_join(genome_metadata, by=join_by(phylum == phylum)) %>%
@@ -47,6 +47,38 @@ genome_counts_filt %>%
           axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black"),
           panel.spacing = unit(0, "lines")) +
    labs(fill="Phylum")
+```
+
+
+```{r barplot_positive_filtered_genus, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "microsample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  left_join(sample_metadata, by = join_by(microsample == microsample)) %>% #append sample metadata
+  left_join(quality, by = join_by(microsample == microsample)) %>% #append sample metadata
+  mutate(section=unlist(section)) %>%
+  filter(!is.na(count)) %>%
+  filter(count > 0) %>%
+  filter(section != "Ileum") %>%
+  filter(type == "Positive") %>%
+  filter(quality == 5) %>%
+  mutate(genome=factor(genome,levels=genome_tree$tip.label)) %>% 
+  ggplot(aes(x=count, y=microsample, fill=genus, group=genus)) + #grouping enables keeping the same sorting of taxonomic units
+    geom_bar(stat="identity", colour="white", linewidth=0.1) + #plot stacked bars with white borders
+    labs(x = "Relative abundance", y="Microsamples") +
+    facet_nested(cryosection  ~ .,  scales="free_y") + #facet per day and treatment
+ guides(fill = guide_legend()) +
+    theme(strip.text.y = element_text(angle = 0),
+          axis.title.x = element_blank(),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black"),
+          panel.spacing = unit(0, "lines"),
+          legend.position="bottom") +
+   labs(fill="Genus")
 ```
 
 ### Positive samples, coverage-unfiltered
